@@ -1,0 +1,25 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <!-- Video Thumbnail -->
+    <ImageView
+        android:id="@+id/imageImageView"
+        android:layout_width="169dp"
+        android:layout_height="170dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:src="@android:drawable/ic_menu_gallery" />
+    <!-- Download button -->
+    <ImageView
+        android:id="@+id/imageDownloadButton"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:contentDescription="Download"
+        android:src="@drawable/download"
+        android:layout_gravity="bottom|end"
+        android:clickable="true" />
+
+</FrameLayout>
