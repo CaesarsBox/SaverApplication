@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.example.saverapplication.R;
 import com.example.saverapplication.ui.whatsapp.images.ImageData;
 import com.example.saverapplication.ui.whatsapp.images.ImagesAdapter;
+import com.example.saverapplication.ui.whatsapp.images.ImagesFragment;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -40,8 +41,8 @@ public class ImageBFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static com.example.saverapplication.ui.whatsapp.images.ImagesFragment newInstance() {
-        return new com.example.saverapplication.ui.whatsapp.images.ImagesFragment();
+    public static ImageBFragment newInstance() {
+        return new ImageBFragment();
     }
 
     @Override
@@ -77,9 +78,9 @@ public class ImageBFragment extends Fragment {
         List<ImageData> imageDataList = new ArrayList<>();
 
         // Get the directory where image files are stored
-        File whatsappDirectory = new File(Environment.getExternalStorageDirectory(), "WhatsApp Business/Media/.Statuses");
-        if (whatsappDirectory.exists() && whatsappDirectory.isDirectory()) {
-            File[] files = whatsappDirectory.listFiles();
+        File whatsappBusinessDirectory = new File(Environment.getExternalStorageDirectory(), "WhatsApp Business/Media/.Statuses");
+        if (whatsappBusinessDirectory.exists() && whatsappBusinessDirectory.isDirectory()) {
+            File[] files = whatsappBusinessDirectory.listFiles();
 
             if (files != null) {
                 for (File file : files) {
@@ -123,13 +124,14 @@ public class ImageBFragment extends Fragment {
         try {
             // Decode the original image file to get a Bitmap
             BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888; // Use higher quality configuration
             options.inJustDecodeBounds = true;
             BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
 
             // Calculate the inSampleSize to get a smaller thumbnail
             options.inSampleSize = calculateInSampleSize(options, 100, 100); // Adjust the dimensions as needed
 
-            // Decode the image with the calculated inSampleSize
+            // Decode the image with the calculated inSampleSize and higher quality configuration
             options.inJustDecodeBounds = false;
             Bitmap thumbnailBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
 
@@ -144,6 +146,7 @@ public class ImageBFragment extends Fragment {
             return Uri.fromFile(imageFile);
         }
     }
+
 
     private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         final int height = options.outHeight;
@@ -205,7 +208,6 @@ public class ImageBFragment extends Fragment {
     }
 
 
-    // Handle downloading the image
     private void downloadImage(String imageUri) {
         Uri uri = Uri.parse(imageUri);
 
@@ -220,7 +222,7 @@ public class ImageBFragment extends Fragment {
 
         // Generate a unique file name using timestamp
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        String fileName = "image_" + timeStamp + getFileExtension(uri);
+        String fileName = "image_" + timeStamp + "." + getFileExtension(uri);
 
         // Set the destination path including the directory and unique file name
         File destinationFile = new File(statusSaverDirectory, fileName);
@@ -251,10 +253,13 @@ public class ImageBFragment extends Fragment {
         }
     }
 
-    // Helper method to get the file extension from the URI
     private String getFileExtension(Uri uri) {
         ContentResolver contentResolver = requireContext().getContentResolver();
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+        String extension = mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+
+        // Ensure extension is not null or empty
+        return (extension != null && !extension.isEmpty()) ? extension : "jpg";
     }
+
 }

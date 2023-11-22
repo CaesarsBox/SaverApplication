@@ -35,12 +35,6 @@ public class WBFragment extends Fragment {
 
         return view;
     }
-    public void refreshData(List<ImageData> updatedImageList, List<VideoData> updatedVideoList) {
-        // Update your UI or adapter with the new data
-        // For example, if you have an adapter, you can update its data and call notifyDataSetChanged()
-
-        // adapter.updateData(updatedImageList, updatedVideoList);
-        // adapter.notifyDataSetChanged();
-    }
+   
 }
 

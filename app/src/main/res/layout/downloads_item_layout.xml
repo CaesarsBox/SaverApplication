@@ -1,30 +1,23 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!-- downloads_item_layout.xml -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".ui.ImageViewerActivity">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <!-- ImageView to display the image -->
+    <!-- ImageView for the thumbnail -->
     <ImageView
-        android:id="@+id/downloadedImageView"
-        android:layout_width="match_parent"
-        android:layout_height="678dp"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter" />
-
-
-    <!-- Share button to share the image -->
-    <Button
-        android:id="@+id/shareButton"
+        android:id="@+id/thumbnailImageView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Share Image"
-        android:gravity="center"
-        android:padding="16dp"
-        android:textColor="#FFFFFF"
-    />
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop" />
+
+    <!-- Button for sharing -->
+    <Button
+        android:id="@+id/shareButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Share" />
+
 </LinearLayout>

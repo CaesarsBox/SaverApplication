@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.core.content.FileProvider;
@@ -35,6 +36,8 @@ import java.util.List;
 import java.util.Locale;
 
 public class VideosFragment extends Fragment {
+    private VideosAdapter videosAdapter;
+
     public VideosFragment() {
         // Required empty public constructor
     }
@@ -62,12 +65,73 @@ public class VideosFragment extends Fragment {
             }
         };
 
-        VideosAdapter videosAdapter = new VideosAdapter(requireContext(), getVideoData(), itemClickListener);
+        videosAdapter = new VideosAdapter(requireContext(), getVideoData(), itemClickListener);
         recyclerView.setAdapter(videosAdapter);
+        new  VideosFragment.LoadVideosTask().execute();
 
         return view;
     }
 
+    private class LoadVideosTask extends AsyncTask<Void, List<VideoData>, Void> {
+        private static final int BATCH_SIZE = 2; // Adjust the batch size as needed
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            List<VideoData> allVideoData = getVideoData();
+
+            for (int start = 0; start < allVideoData.size(); start += BATCH_SIZE) {
+                int end = Math.min(start + BATCH_SIZE, allVideoData.size());
+                List<VideoData> batch = allVideoData.subList(start, end);
+                publishProgress(batch);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(List<VideoData>... batches) {
+            super.onProgressUpdate(batches);
+
+            List<VideoData> batch = batches[0];
+            videosAdapter.addData(batch);
+            videosAdapter.notifyDataSetChanged();
+            Toast.makeText(requireContext(), "Status loaded successfully", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+    private void updateThumbnailInBackground(final VideoData videoData) {
+        new AsyncTask<Void, Void, Uri>() {
+            @Override
+            protected Uri doInBackground(Void... voids) {
+                return getThumbnailUriForVideo(new File(videoData.getVideoUri()));
+            }
+
+            @Override
+            protected void onPostExecute(Uri thumbnailUri) {
+                super.onPostExecute(thumbnailUri);
+
+                if (thumbnailUri != null) {
+                    // Update the VideoData with the thumbnail URI
+                    videoData.setThumbnailUri(thumbnailUri.toString());
+
+                    // Notify the adapter that the data set has changed
+                    videosAdapter.notifyDataSetChanged();
+                } else {
+                    // Handle the case where thumbnailUri is null (e.g., log an error or show a message)
+                    Log.e("VideoFragment", "Thumbnail URI is null.");
+                }
+            }
+        }.execute();
+    }
+    private void downloadVideoInBackground(final String videoUri) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                downloadVideo(videoUri);
+                return null;
+            }
+        }.execute();
+    }
 
     private List<VideoData> getVideoData() {
         List<VideoData> videoDataList = new ArrayList<>();
@@ -89,6 +153,7 @@ public class VideosFragment extends Fragment {
 
                         VideoData videoData = new VideoData(videoUri.toString(), thumbnailUri.toString());
                         videoDataList.add(videoData);
+                        updateThumbnailInBackground(videoData);
                     }
                 }
             }
@@ -117,18 +182,24 @@ public class VideosFragment extends Fragment {
 
     // Add a method to get the thumbnail URI for the video (you can use a suitable approach here)/ ...
     private Uri getThumbnailUriForVideo(File videoFile) {
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        MediaMetadataRetriever retriever = null;
 
         try {
+            retriever = new MediaMetadataRetriever();
             retriever.setDataSource(videoFile.getAbsolutePath());
 
-            // Extract the frame at the 1st second (you can change this time as needed)
-            Bitmap thumbnail = retriever.getFrameAtTime(1000000); // 1,000,000 microseconds = 1 second
+            // Extract the frame at a smaller time interval
+            Bitmap thumbnail = retriever.getFrameAtTime(100000);
 
             if (thumbnail != null) {
-                // Save the thumbnail image to a file (optional)
+                // Resize the thumbnail to a smaller size
+                int targetWidth = 100; // Adjust the width as needed
+                int targetHeight = (int) (targetWidth * (float) thumbnail.getHeight() / thumbnail.getWidth());
+                Bitmap resizedThumbnail = Bitmap.createScaledBitmap(thumbnail, targetWidth, targetHeight, false);
+
+                // Save the resized thumbnail image to a file (optional)
                 String videoFileName = videoFile.getName();
-                File thumbnailFile = saveThumbnailToDisk(thumbnail, videoFileName);
+                File thumbnailFile = saveThumbnailToDisk(resizedThumbnail, videoFileName);
 
                 // Log the thumbnail file path
                 Log.d("VideoFragment", "Thumbnail file path: " + thumbnailFile.getAbsolutePath());
@@ -143,11 +214,13 @@ public class VideosFragment extends Fragment {
             Log.d("VideoFragment", "RuntimeException: " + e.getMessage());
         } finally {
             // Handle the IOException when releasing the retriever
-            try {
-                retriever.release();
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.d("VideoFragment", "IOException on release: " + e.getMessage());
+            if (retriever != null) {
+                try {
+                    retriever.release();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.d("VideoFragment", "Exception on release: " + e.getMessage());
+                }
             }
         }
 
@@ -221,13 +294,31 @@ public class VideosFragment extends Fragment {
             mediaScanIntent.setData(Uri.fromFile(destinationFile));
             requireContext().sendBroadcast(mediaScanIntent);
 
-            // Optionally, you can show a Toast or perform any other action to indicate success
-            Toast.makeText(requireContext(), "Video downloaded successfully", Toast.LENGTH_SHORT).show();
+            // Show a Toast indicating success on the main thread
+            showSuccessToast();
         } catch (IOException e) {
             e.printStackTrace();
-            // Handle the exception, e.g., show an error message
-            Toast.makeText(requireContext(), "Failed to download video", Toast.LENGTH_SHORT).show();
+            // Handle the exception, e.g., show an error message on the main thread
+            showErrorToast();
         }
+    }
+
+    private void showSuccessToast() {
+        requireActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(requireContext(), "Video downloaded successfully", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void showErrorToast() {
+        requireActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(requireContext(), "Failed to download video", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }

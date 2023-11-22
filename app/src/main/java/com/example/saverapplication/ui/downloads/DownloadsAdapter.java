@@ -1,15 +1,14 @@
 package com.example.saverapplication.ui.downloads;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageSwitcher;
 import android.widget.ImageView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,6 +27,11 @@ public class DownloadsAdapter extends RecyclerView.Adapter<DownloadsAdapter.Down
         this.downloadedItemList = downloadedItemList;
         this.itemClickListener = itemClickListener;
     }
+    public void setData(List<DownloadedItem> newData) {
+        downloadedItemList.clear();
+        downloadedItemList.addAll(newData);
+        notifyDataSetChanged();
+    }
 
     @NonNull
     @Override
@@ -40,15 +44,25 @@ public class DownloadsAdapter extends RecyclerView.Adapter<DownloadsAdapter.Down
     public void onBindViewHolder(@NonNull DownloadsViewHolder holder, int position) {
         DownloadedItem downloadedItem = downloadedItemList.get(position);
 
-        // Populate the views in your item layout with information from DownloadedItem
-        // For example:
-        // holder.fileNameTextView.setText(downloadedItem.getFileName());
-
-        // Set click listeners
+        if (downloadedItem.getThumbnailUri() != null) {
+            holder.thumbnailImageView.setImageURI(Uri.parse(downloadedItem.getThumbnailUri()));
+        } else {
+            // Handle the case where the thumbnail URI is null
+            // You might want to set a default image or hide the thumbnail view
+            holder.thumbnailImageView.setImageResource(R.drawable.icon);
+        }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 itemClickListener.onItemClick(downloadedItem);
+            }
+        });
+
+        // Set share click listener
+        holder.shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                itemClickListener.onShareClick(downloadedItem);
             }
         });
     }
@@ -59,17 +73,17 @@ public class DownloadsAdapter extends RecyclerView.Adapter<DownloadsAdapter.Down
     }
 
     public class DownloadsViewHolder extends RecyclerView.ViewHolder {
-        // Define views in your downloaded_item_layout.xml
-        // For example:
-        // TextView fileNameTextView;
-        // Button shareButton;
+
+        public ImageView thumbnailImageView;
+        Button shareButton;
 
         public DownloadsViewHolder(View itemView) {
             super(itemView);
             // Initialize views
             // For example:
-            // fileNameTextView = itemView.findViewById(R.id.fileNameTextView);
-            // shareButton = itemView.findViewById(R.id.shareButton);
+            thumbnailImageView = itemView.findViewById(R.id.thumbnailImageView);
+
+            shareButton = itemView.findViewById(R.id.shareButton);
         }
     }
 

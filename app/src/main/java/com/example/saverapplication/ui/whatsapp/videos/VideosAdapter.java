@@ -24,6 +24,14 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosView
         this.videoList = videoList;
         this.itemClickListener = itemClickListener;
     }
+    public void setData(List<VideoData> newData) {
+        videoList.clear();
+        videoList.addAll(newData);
+        notifyDataSetChanged();
+    }
+    public void addData(List<VideoData> newData) {
+        videoList.addAll(newData);
+    }
 
     @NonNull
     @Override

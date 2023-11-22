@@ -40,8 +40,8 @@ public class ImagesFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static ImageBFragment newInstance() {
-        return new ImageBFragment();
+    public static ImagesFragment newInstance() {
+        return new ImagesFragment();
     }
 
     @Override
@@ -123,13 +123,14 @@ public class ImagesFragment extends Fragment {
         try {
             // Decode the original image file to get a Bitmap
             BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888; // Use higher quality configuration
             options.inJustDecodeBounds = true;
             BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
 
             // Calculate the inSampleSize to get a smaller thumbnail
             options.inSampleSize = calculateInSampleSize(options, 100, 100); // Adjust the dimensions as needed
 
-            // Decode the image with the calculated inSampleSize
+            // Decode the image with the calculated inSampleSize and higher quality configuration
             options.inJustDecodeBounds = false;
             Bitmap thumbnailBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
 
@@ -144,6 +145,7 @@ public class ImagesFragment extends Fragment {
             return Uri.fromFile(imageFile);
         }
     }
+
 
     private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         final int height = options.outHeight;
@@ -220,7 +222,7 @@ public class ImagesFragment extends Fragment {
 
         // Generate a unique file name using timestamp
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        String fileName = "image_" + timeStamp + getFileExtension(uri);
+        String fileName = "image_" + timeStamp + "." + getFileExtension(uri);
 
         // Set the destination path including the directory and unique file name
         File destinationFile = new File(statusSaverDirectory, fileName);
@@ -251,10 +253,13 @@ public class ImagesFragment extends Fragment {
         }
     }
 
-    // Helper method to get the file extension from the URI
     private String getFileExtension(Uri uri) {
         ContentResolver contentResolver = requireContext().getContentResolver();
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+        String extension = mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+
+        // Ensure extension is not null or empty
+        return (extension != null && !extension.isEmpty()) ? extension : "jpg";
     }
+
 }
