@@ -1,36 +1,32 @@
 package com.example.saverapplication.ui.downloads;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageSwitcher;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.saverapplication.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DownloadsAdapter extends RecyclerView.Adapter<DownloadsAdapter.DownloadsViewHolder> {
+    private final Context context;
+    private final List<DownloadedItem> downloadedItems;
+    private final OnItemClickListener listener;
 
-    private List<DownloadedItem> downloadedItemList;
-    private OnItemClickListener itemClickListener;
-    private Context context;
-
-    public DownloadsAdapter(Context context, List<DownloadedItem> downloadedItemList, OnItemClickListener itemClickListener) {
+    public DownloadsAdapter(Context context, List<DownloadedItem> downloadedItems, OnItemClickListener listener) {
         this.context = context;
-        this.downloadedItemList = downloadedItemList;
-        this.itemClickListener = itemClickListener;
-    }
-    public void setData(List<DownloadedItem> newData) {
-        downloadedItemList.clear();
-        downloadedItemList.addAll(newData);
-        notifyDataSetChanged();
+        this.downloadedItems = downloadedItems;
+        this.listener = listener;
     }
 
     @NonNull
@@ -42,47 +38,70 @@ public class DownloadsAdapter extends RecyclerView.Adapter<DownloadsAdapter.Down
 
     @Override
     public void onBindViewHolder(@NonNull DownloadsViewHolder holder, int position) {
-        DownloadedItem downloadedItem = downloadedItemList.get(position);
+        DownloadedItem item = downloadedItems.get(position);
 
-        if (downloadedItem.getThumbnailUri() != null) {
-            holder.thumbnailImageView.setImageURI(Uri.parse(downloadedItem.getThumbnailUri()));
-        } else {
-            // Handle the case where the thumbnail URI is null
-            // You might want to set a default image or hide the thumbnail view
-            holder.thumbnailImageView.setImageResource(R.drawable.icon);
-        }
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        Glide.with(context).load(item.getThumbnailUri()).into(holder.thumbnailImageView);
+
+        holder.thumbnailImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                itemClickListener.onItemClick(downloadedItem);
+                int currentPosition = holder.getAdapterPosition();
+                if (currentPosition == RecyclerView.NO_POSITION) return;
+
+                Intent intent = new Intent(context, ImageViewerActivity.class);
+
+                ArrayList<String> imagePaths = new ArrayList<>();
+                for (DownloadedItem downloadedItem : downloadedItems) {
+                    imagePaths.add(downloadedItem.getFilePath());
+                }
+
+                intent.putStringArrayListExtra("imagePaths", imagePaths);
+                intent.putExtra("startPosition", currentPosition);
+
+                context.startActivity(intent);
             }
         });
 
-        // Set share click listener
+        // Set click listener for the share button
         holder.shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                itemClickListener.onShareClick(downloadedItem);
+                // Get the current adapter position
+                int currentPosition = holder.getAdapterPosition();
+                if (currentPosition == RecyclerView.NO_POSITION) return;
+
+                // Handle the share functionality
+                listener.onShareClick(downloadedItems.get(currentPosition));
             }
         });
     }
 
-    @Override
-    public int getItemCount() {
-        return downloadedItemList.size();
+    @SuppressLint("NotifyDataSetChanged")
+    public void clearData() {
+        downloadedItems.clear();
+        notifyDataSetChanged();  // Notify the adapter to refresh the view
     }
 
-    public class DownloadsViewHolder extends RecyclerView.ViewHolder {
 
-        public ImageView thumbnailImageView;
-        Button shareButton;
+    @Override
+    public int getItemCount() {
+        return downloadedItems.size();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setData(List<DownloadedItem> newItems) {
+        downloadedItems.clear();
+        downloadedItems.addAll(newItems);
+        notifyDataSetChanged();
+    }
+
+    public static class DownloadsViewHolder extends RecyclerView.ViewHolder {
+        ImageView thumbnailImageView;
+        ImageButton shareButton;
 
         public DownloadsViewHolder(View itemView) {
             super(itemView);
-            // Initialize views
-            // For example:
             thumbnailImageView = itemView.findViewById(R.id.thumbnailImageView);
-
             shareButton = itemView.findViewById(R.id.shareButton);
         }
     }

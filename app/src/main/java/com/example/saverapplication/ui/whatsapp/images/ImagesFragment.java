@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.saverapplication.R;
+import com.example.saverapplication.ui.downloads.ImageViewerActivity;
 import com.example.saverapplication.ui.whatsapp4b.ImageBFragment;
 
 import java.io.File;
@@ -72,36 +73,56 @@ public class ImagesFragment extends Fragment {
         return view;
     }
 
-    // Helper method to get a list of ImageData from the WhatsApp Status directory
     private List<ImageData> getImageData() {
         List<ImageData> imageDataList = new ArrayList<>();
 
-        // Get the directory where image files are stored
+        // Get the context (use requireContext() to ensure it is not null)
+        Context context = requireContext();
+
+        // Access WhatsApp's Status directory in external storage
         File whatsappDirectory = new File(Environment.getExternalStorageDirectory(), "WhatsApp/Media/.Statuses");
         if (whatsappDirectory.exists() && whatsappDirectory.isDirectory()) {
             File[] files = whatsappDirectory.listFiles();
-
             if (files != null) {
                 for (File file : files) {
-                    // Check if it's a file and has an image extension (e.g., .jpg, .png)
-                    if (file.isFile() && isImageFile(file)) {
-                        // Convert the file path to a URI and add it to the list
+                    if (file.isFile() && !file.isHidden() && isImageFile(file)) {
                         Uri imageUri = Uri.fromFile(file);
-
-                        // Assuming you have a method to get the thumbnail URI for the image
-                        Uri thumbnailUri = getThumbnailUriForImage(file);
-
+                        Uri thumbnailUri = getThumbnailUriForImage(file); // Assuming you have this method
                         ImageData imageData = new ImageData(imageUri.toString(), thumbnailUri.toString());
                         imageDataList.add(imageData);
                     }
                 }
             }
         } else {
-            Log.e("ImagesFragment", "WhatsApp Status directory not found.");
+            Log.e("Whatsapp ImagesFragment", "WhatsApp Status directory not found.");
         }
+
+        // Optional: Check for images in internal storage (app-specific files, if any)
+        File internalDirectory = new File(context.getExternalFilesDir(null), "Media/.Statuses");
+        if (internalDirectory.exists() && internalDirectory.isDirectory()) {
+            File[] files = internalDirectory.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile() && !file.isHidden() && isImageFile(file)) {
+                        Uri imageUri = Uri.fromFile(file);
+                        Uri thumbnailUri = getThumbnailUriForImage(file); // Assuming you have this method
+                        ImageData imageData = new ImageData(imageUri.toString(), thumbnailUri.toString());
+                        imageDataList.add(imageData);
+                    }
+                }
+            }
+        } else {
+            Log.e("Internal ImagesFragment", "Internal Status directory not found.");
+        }
+
+        Log.d("ImageDataListSize", "Number of images found: " + imageDataList.size());
+        Log.d("WhatsappDirectory", whatsappDirectory.getAbsolutePath());
+        Log.d("InternalDirectory", internalDirectory.getAbsolutePath());
 
         return imageDataList;
     }
+
+
 
     // Add a method to check if a file is an image file based on its extension
     private boolean isImageFile(File file) {
@@ -182,29 +203,12 @@ public class ImagesFragment extends Fragment {
     private void openImage(String imageUri) {
         Log.d("ImageUri", imageUri);
 
-        // Create an Intent to view the image
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-
-        // Use FileProvider to get content URI
-        File imageFile = new File(Uri.parse(imageUri).getPath());
-        Uri contentUri = FileProvider.getUriForFile(requireContext(),
-                requireContext().getApplicationContext().getPackageName() + ".provider",
-                imageFile);
-
-        Log.d("ContentUri", contentUri.toString());
-
-        // Set the data and type for the Intent
-        intent.setDataAndType(contentUri, "image/*");
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-        // Check if there's an app to handle this Intent
-        if (intent.resolveActivity(requireContext().getPackageManager()) != null) {
-            startActivity(intent);
-        } else {
-            // Handle the case where no app can handle the image
-            Toast.makeText(requireContext(), "No app found to open the image", Toast.LENGTH_SHORT).show();
-        }
+        // Create an Intent to open the ImageViewerActivity for preview
+        Intent intent = new Intent(requireContext(), ImageViewerActivity.class);
+        intent.putExtra("imageUri", imageUri); // Pass the URI of the image to preview
+        startActivity(intent);
     }
+
 
 
     // Handle downloading the image

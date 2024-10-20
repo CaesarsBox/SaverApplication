@@ -21,6 +21,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
 import com.example.saverapplication.R;
+import com.example.saverapplication.ui.downloads.ImageViewerActivity;
 import com.example.saverapplication.ui.whatsapp.images.ImageData;
 import com.example.saverapplication.ui.whatsapp.images.ImagesAdapter;
 import com.example.saverapplication.ui.whatsapp.images.ImagesFragment;
@@ -183,28 +184,10 @@ public class ImageBFragment extends Fragment {
     private void openImage(String imageUri) {
         Log.d("ImageUri", imageUri);
 
-        // Create an Intent to view the image
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-
-        // Use FileProvider to get content URI
-        File imageFile = new File(Uri.parse(imageUri).getPath());
-        Uri contentUri = FileProvider.getUriForFile(requireContext(),
-                requireContext().getApplicationContext().getPackageName() + ".provider",
-                imageFile);
-
-        Log.d("ContentUri", contentUri.toString());
-
-        // Set the data and type for the Intent
-        intent.setDataAndType(contentUri, "image/*");
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-        // Check if there's an app to handle this Intent
-        if (intent.resolveActivity(requireContext().getPackageManager()) != null) {
-            startActivity(intent);
-        } else {
-            // Handle the case where no app can handle the image
-            Toast.makeText(requireContext(), "No app found to open the image", Toast.LENGTH_SHORT).show();
-        }
+        // Create an Intent to open the ImageViewerActivity for preview
+        Intent intent = new Intent(requireContext(), ImageViewerActivity.class);
+        intent.putExtra("imageUri", imageUri); // Pass the URI of the image to preview
+        startActivity(intent);
     }
 
 

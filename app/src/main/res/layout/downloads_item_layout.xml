@@ -1,23 +1,24 @@
-<!-- downloads_item_layout.xml -->
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_margin="8dp">
 
-    <!-- ImageView for the thumbnail -->
     <ImageView
         android:id="@+id/thumbnailImageView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop" />
 
-    <!-- Button for sharing -->
-    <Button
+    <ImageButton
         android:id="@+id/shareButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Share" />
+        android:src="@drawable/ic_share"
+        android:contentDescription="@string/share_image"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_gravity="end|top"
+    android:layout_margin="8dp" />
+</FrameLayout>
 
-</LinearLayout>

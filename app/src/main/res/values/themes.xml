@@ -2,11 +2,14 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.SaverApplication" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/green</item>
     </style>
 
-    <style name="Theme.SaverApplication" parent="Base.Theme.SaverApplication" />
+    <style name="Theme.SaverApplication" parent="Base.Theme.SaverApplication">
+        <item name="colorPrimary">@color/green</item>
+    </style>
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <color name="green">#08A73E</color>
 </resources>

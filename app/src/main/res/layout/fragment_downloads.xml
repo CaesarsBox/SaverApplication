@@ -15,9 +15,10 @@
 
     <!-- RecyclerView to display downloaded images -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_downloads"
+        android:layout_below="@id/toolbar_downloads"
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar_downloads"
-        android:padding="8dp" />
+        android:padding="8dp"
+        android:clipToPadding="false" />
 </RelativeLayout>
