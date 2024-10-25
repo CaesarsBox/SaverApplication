@@ -7,4 +7,5 @@
     <string name="share_image">share</string>
     <string name="delete_image">Delete</string>
     <string name="image_content_description">Status</string>
+    <string name="play_video">Play Video</string>
 </resources>

@@ -28,7 +28,6 @@ public class WBFragment extends Fragment {
         tabLayout = view.findViewById(R.id.wTab_layout);
         viewPager = view.findViewById(R.id.wView_pager);
 
-        // Set up the ViewPager and TabLayout
         WhatsAppBPagerAdapter pagerAdapter = new WhatsAppBPagerAdapter(getChildFragmentManager());
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);

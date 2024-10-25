@@ -24,10 +24,8 @@ public class ImageViewerActivity extends AppCompatActivity {
         List<String> imagePaths = new ArrayList<>();
 
         if (imageUri != null) {
-            // Case: Viewing a single image for preview
-            imagePaths.add(imageUri); // Add the single image URI to the list
+            imagePaths.add(imageUri);
         } else if (getIntent().hasExtra("imagePaths")) {
-            // Case: Viewing downloaded images
             imagePaths = getIntent().getStringArrayListExtra("imagePaths");
         }
 
@@ -37,12 +35,6 @@ public class ImageViewerActivity extends AppCompatActivity {
         int startPosition = getIntent().getIntExtra("startPosition", 0);
         if (startPosition >= 0 && !imagePaths.isEmpty()) {
             imageViewPager.setCurrentItem(startPosition, false);
-        }
-    }
-    public void refreshDownloadsFragment() {
-        DownloadsFragment fragment = (DownloadsFragment) getSupportFragmentManager().findFragmentByTag("DownloadsFragment");
-        if (fragment != null) {
-            fragment.refreshData();
         }
     }
 }

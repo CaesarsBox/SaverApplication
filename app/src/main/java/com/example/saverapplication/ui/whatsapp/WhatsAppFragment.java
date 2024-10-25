@@ -2,38 +2,34 @@ package com.example.saverapplication.ui.whatsapp;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.saverapplication.R;
-import com.example.saverapplication.ui.whatsapp.images.ImageData;
-import com.example.saverapplication.ui.whatsapp.videos.VideoData;
 import com.google.android.material.tabs.TabLayout;
-
-import java.util.List;
-
+import com.google.android.material.tabs.TabLayoutMediator;
 
 public class WhatsAppFragment extends Fragment {
-    private TabLayout bTabLayout;
-    private ViewPager bViewPager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_whats_app, container, false);
-        bTabLayout = view.findViewById(R.id.tab_layout);
-        bViewPager = view.findViewById(R.id.view_pager);
+        TabLayout bTabLayout = view.findViewById(R.id.tab_layout);
+        ViewPager2 bViewPager = view.findViewById(R.id.view_pager);
 
-        // Set up the ViewPager and TabLayout
-        WhatsAppPagerAdapter pagerAdapter = new WhatsAppPagerAdapter(getChildFragmentManager());
+        WhatsAppPagerAdapter pagerAdapter = new WhatsAppPagerAdapter(this);
         bViewPager.setAdapter(pagerAdapter);
-        bTabLayout.setupWithViewPager(bViewPager);
+
+        new TabLayoutMediator(bTabLayout, bViewPager,
+                (tab, position) -> {
+                    tab.setText(pagerAdapter.getPageTitle(position)); // Set the title for each tab
+                }).attach();
 
         return view;
     }
-    public void refreshData(List<ImageData> updatedImageList, List<VideoData> updatedVideoList) {
-        // Update your UI with the new data
-    }
 }
+
+

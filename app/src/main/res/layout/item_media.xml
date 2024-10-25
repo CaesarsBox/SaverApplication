@@ -1,0 +1,26 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/thumbnailImageView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:contentDescription="Imageview"
+        android:scaleType="centerCrop"
+        android:paddingTop="10dp"
+        tools:ignore="HardcodedText" />
+
+    <ImageView
+        android:id="@+id/playButton"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/ic_play_button"
+        android:contentDescription="@string/play_video"
+        android:background="@android:color/transparent"
+        android:padding="16dp"
+        android:paddingTop="10dp"/>
+</RelativeLayout>

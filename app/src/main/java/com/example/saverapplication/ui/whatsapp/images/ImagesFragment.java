@@ -1,6 +1,5 @@
 package com.example.saverapplication.ui.whatsapp.images;
 
-import android.app.DownloadManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,7 +8,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,19 +15,18 @@ import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.saverapplication.R;
 import com.example.saverapplication.ui.downloads.ImageViewerActivity;
-import com.example.saverapplication.ui.whatsapp4b.ImageBFragment;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,11 +46,9 @@ public class ImagesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_images, container, false);
 
-        // Initialize RecyclerView with GridLayoutManager
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_images);
-        recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2)); // 2 items per row
+        recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
 
-        // Set up an item click listener for handling image clicks and downloads
         ImagesAdapter.OnItemClickListener itemClickListener = new ImagesAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(String imageUri) {
@@ -66,7 +61,6 @@ public class ImagesFragment extends Fragment {
             }
         };
 
-        // Create and set the adapter for the RecyclerView
         ImagesAdapter imagesAdapter = new ImagesAdapter(requireContext(), getImageData(), itemClickListener);
         recyclerView.setAdapter(imagesAdapter);
 
@@ -76,57 +70,34 @@ public class ImagesFragment extends Fragment {
     private List<ImageData> getImageData() {
         List<ImageData> imageDataList = new ArrayList<>();
 
-        // Get the context (use requireContext() to ensure it is not null)
-        Context context = requireContext();
-
-        // Access WhatsApp's Status directory in external storage
-        File whatsappDirectory = new File(Environment.getExternalStorageDirectory(), "WhatsApp/Media/.Statuses");
-        if (whatsappDirectory.exists() && whatsappDirectory.isDirectory()) {
-            File[] files = whatsappDirectory.listFiles();
-            if (files != null) {
-                for (File file : files) {
-                    if (file.isFile() && !file.isHidden() && isImageFile(file)) {
-                        Uri imageUri = Uri.fromFile(file);
-                        Uri thumbnailUri = getThumbnailUriForImage(file); // Assuming you have this method
-                        ImageData imageData = new ImageData(imageUri.toString(), thumbnailUri.toString());
-                        imageDataList.add(imageData);
-                    }
-                }
-            }
-        } else {
-            Log.e("Whatsapp ImagesFragment", "WhatsApp Status directory not found.");
-        }
-
-        // Optional: Check for images in internal storage (app-specific files, if any)
-        File internalDirectory = new File(context.getExternalFilesDir(null), "Media/.Statuses");
-        if (internalDirectory.exists() && internalDirectory.isDirectory()) {
-            File[] files = internalDirectory.listFiles();
-            if (files != null) {
-                for (File file : files) {
-                    if (file.isFile() && !file.isHidden() && isImageFile(file)) {
-                        Uri imageUri = Uri.fromFile(file);
-                        Uri thumbnailUri = getThumbnailUriForImage(file); // Assuming you have this method
-                        ImageData imageData = new ImageData(imageUri.toString(), thumbnailUri.toString());
-                        imageDataList.add(imageData);
-                    }
-                }
-            }
-        } else {
-            Log.e("Internal ImagesFragment", "Internal Status directory not found.");
-        }
+        File whatsappStatusDirectory = new File(Environment.getExternalStorageDirectory(), "WhatsApp/Media/.Statuses");
+        imageDataList.addAll(getImagesFromDirectory(whatsappStatusDirectory));
 
         Log.d("ImageDataListSize", "Number of images found: " + imageDataList.size());
-        Log.d("WhatsappDirectory", whatsappDirectory.getAbsolutePath());
-        Log.d("InternalDirectory", internalDirectory.getAbsolutePath());
-
         return imageDataList;
     }
 
 
+    private List<ImageData> getImagesFromDirectory(File directory) {
+        List<ImageData> imageDataList = new ArrayList<>();
+        if (directory.exists() && directory.isDirectory()) {
+            File[] files = directory.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile() && !file.isHidden() && isImageFile(file)) {
+                        Uri imageUri = Uri.fromFile(file);
+                        Uri thumbnailUri = getThumbnailUriForImage(file);
+                        imageDataList.add(new ImageData(imageUri.toString(), thumbnailUri.toString()));
+                    }
+                }
+            }
+        } else {
+            Log.e("ImagesFragment", directory.getAbsolutePath() + " not found.");
+        }
+        return imageDataList;
+    }
 
-    // Add a method to check if a file is an image file based on its extension
     private boolean isImageFile(File file) {
-        // Add more image extensions if needed
         String[] imageExtensions = new String[]{".jpg", ".png", ".jpeg"};
         String fileName = file.getName().toLowerCase();
 
@@ -135,135 +106,103 @@ public class ImagesFragment extends Fragment {
                 return true;
             }
         }
-
         return false;
     }
 
-    // Add a method to get the thumbnail URI for the image (you can use a suitable approach here)
     private Uri getThumbnailUriForImage(File imageFile) {
         try {
-            // Decode the original image file to get a Bitmap
             BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888; // Use higher quality configuration
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             options.inJustDecodeBounds = true;
             BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
 
-            // Calculate the inSampleSize to get a smaller thumbnail
-            options.inSampleSize = calculateInSampleSize(options, 100, 100); // Adjust the dimensions as needed
-
-            // Decode the image with the calculated inSampleSize and higher quality configuration
+            options.inSampleSize = calculateInSampleSize(options);
             options.inJustDecodeBounds = false;
-            Bitmap thumbnailBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
 
-            // Save the thumbnail to a temporary file
+            Bitmap thumbnailBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
             File thumbnailFile = saveThumbnailToFile(thumbnailBitmap, "thumbnail_" + imageFile.getName());
 
-            // Return the URI of the thumbnail file
             return Uri.fromFile(thumbnailFile);
         } catch (Exception e) {
-            e.printStackTrace();
-            // Return the original image URI as a fallback
+            Log.e("ImagesFragment", "Error generating thumbnail for " + imageFile.getName(), e);
             return Uri.fromFile(imageFile);
         }
     }
 
-
-    private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+    private int calculateInSampleSize(BitmapFactory.Options options) {
         final int height = options.outHeight;
         final int width = options.outWidth;
         int inSampleSize = 1;
 
-        if (height > reqHeight || width > reqWidth) {
+        if (height > 100 || width > 100) {
             final int halfHeight = height / 2;
             final int halfWidth = width / 2;
 
-            while ((halfHeight / inSampleSize) >= reqHeight && (halfWidth / inSampleSize) >= reqWidth) {
+            while ((halfHeight / inSampleSize) >= 100 && (halfWidth / inSampleSize) >= 100) {
                 inSampleSize *= 2;
             }
         }
-
         return inSampleSize;
     }
 
     private File saveThumbnailToFile(Bitmap thumbnailBitmap, String fileName) {
         File thumbnailFile = new File(requireContext().getCacheDir(), fileName);
-        try {
-            FileOutputStream fos = new FileOutputStream(thumbnailFile);
+        try (FileOutputStream fos = new FileOutputStream(thumbnailFile)) {
             thumbnailBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos);
-            fos.flush();
-            fos.close();
+            return thumbnailFile;
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("ImagesFragment", "Error saving thumbnail to file", e);
+            return null;
         }
-        return thumbnailFile;
     }
 
-
-    // Handle opening the image using an Intent
     private void openImage(String imageUri) {
         Log.d("ImageUri", imageUri);
 
-        // Create an Intent to open the ImageViewerActivity for preview
         Intent intent = new Intent(requireContext(), ImageViewerActivity.class);
-        intent.putExtra("imageUri", imageUri); // Pass the URI of the image to preview
+        intent.putExtra("imageUri", imageUri);
         startActivity(intent);
     }
 
-
-
-    // Handle downloading the image
     private void downloadImage(String imageUri) {
         Uri uri = Uri.parse(imageUri);
 
-        // Set destination directory for the downloaded file in DCIM/StatusSaver
         File dcimDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
         File statusSaverDirectory = new File(dcimDirectory, "StatusSaver");
 
-        // Create the directory if it doesn't exist
         if (!statusSaverDirectory.exists()) {
             statusSaverDirectory.mkdirs();
         }
 
-        // Generate a unique file name using timestamp
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        String fileName = "image_" + timeStamp + "." + getFileExtension(uri);
-
-        // Set the destination path including the directory and unique file name
+        String fileName = "image_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date()) + "." + getFileExtension(uri);
         File destinationFile = new File(statusSaverDirectory, fileName);
 
-        // Copy the file using file I/O
-        try {
-            InputStream inputStream = requireContext().getContentResolver().openInputStream(uri);
-            OutputStream outputStream = new FileOutputStream(destinationFile);
+        try (InputStream inputStream = requireContext().getContentResolver().openInputStream(uri);
+             OutputStream outputStream = Files.newOutputStream(destinationFile.toPath())) {
 
             byte[] buffer = new byte[1024];
             int length;
-            while ((length = inputStream.read(buffer)) > 0) {
+            while (true) {
+                assert inputStream != null;
+                if (!((length = inputStream.read(buffer)) > 0)) break;
                 outputStream.write(buffer, 0, length);
             }
 
-            inputStream.close();
-            outputStream.close();
-
-            // Notify the system that a new file has been created
+            // Notify media scanner
             Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
             mediaScanIntent.setData(Uri.fromFile(destinationFile));
             requireContext().sendBroadcast(mediaScanIntent);
 
             Toast.makeText(requireContext(), "Image downloaded successfully", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("ImagesFragment", "Failed to download image", e);
             Toast.makeText(requireContext(), "Failed to download image", Toast.LENGTH_SHORT).show();
         }
     }
 
     private String getFileExtension(Uri uri) {
         ContentResolver contentResolver = requireContext().getContentResolver();
-        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        String extension = mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
-
-        // Ensure extension is not null or empty
+        String extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(contentResolver.getType(uri));
         return (extension != null && !extension.isEmpty()) ? extension : "jpg";
     }
-
 }

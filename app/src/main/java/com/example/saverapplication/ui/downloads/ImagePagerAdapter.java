@@ -3,6 +3,7 @@ package com.example.saverapplication.ui.downloads;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -32,29 +34,24 @@ public class ImagePagerAdapter extends RecyclerView.Adapter<ImagePagerAdapter.Im
     @NonNull
     @Override
     public ImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Inflate the layout for each image page
         View view = LayoutInflater.from(context).inflate(R.layout.item_image, parent, false);
         return new ImageViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
-        // Load the image into the ImageView using Glide
         String imagePath = imagePaths.get(position);
+
+        // Load the image using Glide
         Glide.with(context)
                 .load(imagePath)
                 .into(holder.imageView);
 
-        // Set click listeners for the delete and share buttons
-        holder.deleteButton.setOnClickListener(v -> {
-            // Handle delete action
-            deleteImage(imagePath, position);
-        });
+        // Set up the delete button
+        holder.deleteButton.setOnClickListener(v -> deleteImage(imagePath, position));
 
-        holder.shareButton.setOnClickListener(v -> {
-            // Handle share action
-            shareImage(imagePath);
-        });
+        // Set up the share button
+        holder.shareButton.setOnClickListener(v -> shareImage(imagePath));
     }
 
     @Override
@@ -62,7 +59,6 @@ public class ImagePagerAdapter extends RecyclerView.Adapter<ImagePagerAdapter.Im
         return imagePaths.size();
     }
 
-    // ViewHolder class to hold references to the views
     public static class ImageViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         ImageButton deleteButton, shareButton;
@@ -76,40 +72,51 @@ public class ImagePagerAdapter extends RecyclerView.Adapter<ImagePagerAdapter.Im
     }
 
     private void deleteImage(String imagePath, int position) {
+        // Remove the "file://" prefix if present
+        if (imagePath.startsWith("file://")) {
+            imagePath = imagePath.substring(7); // Remove "file://"
+        }
+
+        Log.d("ImagePagerAdapter", "Attempting to delete image at path: " + imagePath);
         File file = new File(imagePath);
 
-        // Check if the file exists
         if (file.exists()) {
-            // Attempt to delete the file
+            Log.d("ImagePagerAdapter", "File exists: " + file.getAbsolutePath());
             if (file.delete()) {
-                // If the file is deleted successfully, remove it from the list and notify the adapter
                 imagePaths.remove(position);
                 notifyItemRemoved(position);
-                notifyItemRangeChanged(position, imagePaths.size());  // Optional: To refresh the list
-
-                // Notify the activity to refresh the DownloadsFragment
-                if (context instanceof ImageViewerActivity) {
-                    ((ImageViewerActivity) context).refreshDownloadsFragment();
-                }
-
+                notifyItemRangeChanged(position, imagePaths.size());
                 Toast.makeText(context, "Image deleted successfully", Toast.LENGTH_SHORT).show();
             } else {
-                // If deletion fails
                 Toast.makeText(context, "Failed to delete image from storage", Toast.LENGTH_SHORT).show();
             }
         } else {
-            // If the file doesn't exist
+            Log.d("ImagePagerAdapter", "Image not found: " + file.getAbsolutePath());
             Toast.makeText(context, "Image not found", Toast.LENGTH_SHORT).show();
         }
     }
 
-
-    // Method to share the image
     private void shareImage(String imagePath) {
+        // Create a File object from the provided image path
+        File file = new File(imagePath);
+
+        // Check if the file exists before proceeding
+        if (!file.exists()) {
+            Toast.makeText(context, "File not found", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Create a Uri using FileProvider
+        Uri uri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", file);
+
+        // Create the share intent
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("image/*");
-        Uri uri = Uri.fromFile(new File(imagePath));
         shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        // Start the sharing activity
         context.startActivity(Intent.createChooser(shareIntent, "Share image via"));
     }
+
 }

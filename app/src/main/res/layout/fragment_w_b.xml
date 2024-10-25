@@ -7,7 +7,6 @@
     android:orientation="vertical"
     tools:context=".ui.whatsapp4b.WBFragment">
 
-    <!-- TabLayout for switching between Images and Videos tabs -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/wTab_layout"
         android:layout_width="match_parent"
@@ -15,12 +14,9 @@
         app:tabGravity="fill"
         app:tabMode="fixed" />
 
-    <!-- ViewPager to display the tab content -->
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/wView_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
-
-
 </LinearLayout>

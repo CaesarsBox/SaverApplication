@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-<paths>
-    <external-path name="external_files" path="."/>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <external-path name="status_saver" path="DCIM/StatusSaver/" />
+    <external-path name="external_files" path="WhatsApp/Media/.Statuses/" />
+    <external-path name="external_files" path="WhatsApp Business/Media/.Statuses/" />
+    <external-path name="external_files" path="." />
 </paths>

@@ -1,5 +1,6 @@
 package com.example.saverapplication.ui.whatsapp.videos;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -10,27 +11,26 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.saverapplication.R;
 
 import java.util.List;
 
 public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosViewHolder> {
-    private List<VideoData> videoList;
-    private Context context;
-    private OnItemClickListener itemClickListener;
+    private final Context context;
+    private final List<VideoData> videoList;
+    private final OnItemClickListener itemClickListener;
 
     public VideosAdapter(Context context, List<VideoData> videoList, OnItemClickListener itemClickListener) {
         this.context = context;
         this.videoList = videoList;
         this.itemClickListener = itemClickListener;
     }
-    public void setData(List<VideoData> newData) {
-        videoList.clear();
-        videoList.addAll(newData);
-        notifyDataSetChanged();
-    }
+
+    @SuppressLint("NotifyDataSetChanged")
     public void addData(List<VideoData> newData) {
         videoList.addAll(newData);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -44,35 +44,16 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosView
     public void onBindViewHolder(@NonNull VideosViewHolder holder, int position) {
         final VideoData videoData = videoList.get(position);
 
-        // Set the video thumbnail or cover image to the ImageView
-        holder.videoImageView.setImageURI(Uri.parse(videoData.getThumbnailUri()));
+        Glide.with(context)
+                .load(Uri.parse(videoData.getThumbnailUri()))
+                .into(holder.videoImageView);
 
-        // Set an OnClickListener for the video item
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                itemClickListener.onItemClick(videoData.getVideoUri());
-            }
-        });
+        holder.itemView.setOnClickListener(v -> itemClickListener.onItemClick(videoData.getVideoUri()));
 
-        // Set an OnClickListener for the playButton
-        holder.playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Call onItemClick when playButton is clicked
-                itemClickListener.onItemClick(videoData.getVideoUri());
-            }
-        });
-        // Set an OnClickListener for the download button
-        holder.downloadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                itemClickListener.onDownloadClick(videoData.getVideoUri());
-            }
-        });
+        holder.playButton.setOnClickListener(v -> itemClickListener.onItemClick(videoData.getVideoUri()));
+
+        holder.downloadButton.setOnClickListener(v -> itemClickListener.onDownloadClick(videoData.getVideoUri()));
     }
-
-
 
     @Override
     public int getItemCount() {
@@ -91,9 +72,10 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosView
             downloadButton = itemView.findViewById(R.id.downloadButton);
         }
     }
-    public interface OnItemClickListener {
-        void onItemClick(String videoUri);
 
-        void onDownloadClick(String videoUri);
+    public interface OnItemClickListener {
+        void onItemClick(String videoPath);
+
+        void onDownloadClick(String videoPath);
     }
 }

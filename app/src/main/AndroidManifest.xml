@@ -1,10 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
-
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
 
     <application
         android:allowBackup="true"
@@ -16,26 +18,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SaverApplication"
         tools:targetApi="31">
-
-        <!-- Set SplashActivity as the launcher activity -->
+        <activity
+            android:name=".ui.downloads.VideoPlayerActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.SaverApplication">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER"/>
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!-- Add MainActivity -->
-        <activity
-            android:name=".SplashActivity"
-            android:exported="false">
-        </activity>
-
+        </activity> <!-- Add MainActivity -->
         <activity android:name=".ui.downloads.ImageViewerActivity" />
-
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -46,6 +42,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

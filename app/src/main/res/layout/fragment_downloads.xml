@@ -1,24 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- res/layout/fragment_downloads.xml -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:orientation="vertical">
 
-    <!-- Toolbar with title -->
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_downloads"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="#44BA49"
-        app:title="Downloads"
-        app:titleTextColor="@android:color/white" />
-
-    <!-- RecyclerView to display downloaded images -->
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_below="@id/toolbar_downloads"
-        android:id="@+id/recyclerView"
+        android:id="@+id/recyclerViewMedia"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="8dp"
-        android:clipToPadding="false" />
-</RelativeLayout>
+        android:layout_height="match_parent"/>
+</LinearLayout>
