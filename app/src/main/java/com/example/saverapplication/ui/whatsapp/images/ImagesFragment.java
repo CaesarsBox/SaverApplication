@@ -1,7 +1,6 @@
 package com.example.saverapplication.ui.whatsapp.images;
 
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -34,6 +33,9 @@ import java.util.List;
 import java.util.Locale;
 
 public class ImagesFragment extends Fragment {
+    private List<ImageData> imageDataList = new ArrayList<>();
+    private ImagesAdapter imagesAdapter;
+
     public ImagesFragment() {
         // Required empty public constructor
     }
@@ -60,23 +62,33 @@ public class ImagesFragment extends Fragment {
                 downloadImage(imageUri);
             }
         };
-
-        ImagesAdapter imagesAdapter = new ImagesAdapter(requireContext(), getImageData(), itemClickListener);
+        imagesAdapter = new ImagesAdapter(requireContext(), imageDataList, itemClickListener);
         recyclerView.setAdapter(imagesAdapter);
+
+        loadImageData();
 
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadImageData();
+    }
+
+    private void loadImageData() {
+        imageDataList = getImageData();
+        imagesAdapter.updateImageData(imageDataList);
+    }
+
     private List<ImageData> getImageData() {
-        List<ImageData> imageDataList = new ArrayList<>();
 
         File whatsappStatusDirectory = new File(Environment.getExternalStorageDirectory(), "WhatsApp/Media/.Statuses");
-        imageDataList.addAll(getImagesFromDirectory(whatsappStatusDirectory));
+        List<ImageData> imageDataList = new ArrayList<>(getImagesFromDirectory(whatsappStatusDirectory));
 
         Log.d("ImageDataListSize", "Number of images found: " + imageDataList.size());
         return imageDataList;
     }
-
 
     private List<ImageData> getImagesFromDirectory(File directory) {
         List<ImageData> imageDataList = new ArrayList<>();
@@ -182,13 +194,10 @@ public class ImagesFragment extends Fragment {
 
             byte[] buffer = new byte[1024];
             int length;
-            while (true) {
-                assert inputStream != null;
-                if (!((length = inputStream.read(buffer)) > 0)) break;
+            while ((length = inputStream.read(buffer)) > 0) {
                 outputStream.write(buffer, 0, length);
             }
 
-            // Notify media scanner
             Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
             mediaScanIntent.setData(Uri.fromFile(destinationFile));
             requireContext().sendBroadcast(mediaScanIntent);

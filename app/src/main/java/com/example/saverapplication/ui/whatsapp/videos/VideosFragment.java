@@ -199,22 +199,27 @@ public class VideosFragment extends Fragment {
 
         try {
             FileUtils.copyFile(sourceFile, destinationFile);
+            // Notify the media scanner about the new file
             Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
             mediaScanIntent.setData(Uri.fromFile(destinationFile));
             requireContext().sendBroadcast(mediaScanIntent);
-            showSuccessToast();
+            showSuccessToast();  // Show success toast if copy is successful
         } catch (Exception e) {
             Log.e("VideoFragment", "Error copying file: " + e.getMessage());
-            showErrorToast();
+            showErrorToast();  // Show error toast if an exception occurs
         }
     }
 
     private void showSuccessToast() {
-        requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(), "Video downloaded successfully", Toast.LENGTH_SHORT).show());
+        requireActivity().runOnUiThread(() ->
+                Toast.makeText(requireContext(), "Video downloaded successfully", Toast.LENGTH_SHORT).show()
+        );
     }
 
     private void showErrorToast() {
-        requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(), "Failed to download video", Toast.LENGTH_SHORT).show());
+        requireActivity().runOnUiThread(() ->
+                Toast.makeText(requireContext(), "Failed to download video", Toast.LENGTH_SHORT).show()
+        );
     }
 
     @Override

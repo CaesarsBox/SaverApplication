@@ -96,6 +96,7 @@ public class ImagePagerAdapter extends RecyclerView.Adapter<ImagePagerAdapter.Im
         }
     }
 
+
     private void shareImage(String imagePath) {
         // Create a File object from the provided image path
         File file = new File(imagePath);

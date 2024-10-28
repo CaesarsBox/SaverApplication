@@ -8,4 +8,31 @@
     <string name="delete_image">Delete</string>
     <string name="image_content_description">Status</string>
     <string name="play_video">Play Video</string>
+
+    <!-- General Settings -->
+    <string name="general_settings">General Settings</string>
+    <string name="new_status_available_notify">New Status Available Notify</string>
+    <string name="promotional_notifications">Promotional Notifications</string>
+    <string name="night_mode">Night Mode (Dark)</string>
+    <string name="opt_out_ads_personalization">Opt out of Ads Personalization</string>
+
+    <!-- Remove Ads Section -->
+    <string name="remove_ads">Remove Ads</string>
+    <string name="remove_ads_description">Remove Advertisement for Year</string>
+    <string name="price_ksh">Ksh 200.00</string>
+    <string name="buy">BUY</string>
+
+    <!-- Links Section -->
+    <string name="how_it_works">How It Works?</string>
+    <string name="join_channel">Join Channel</string>
+    <string name="terms_of_use">Terms of Use</string>
+    <string name="privacy_policy">Privacy Policy</string>
+
+    <!-- About Section -->
+    <string name="about">About</string>
+    <string name="app_languages">App Languages</string>
+    <string name="write_suggestion">Write Suggestion</string>
+    <string name="clear_app_cache">Clear App Cache</string>
+    <string name="clear_app_cache_description">Clear Temporary Cache Files</string>
+    <string name="period">•</string>
 </resources>

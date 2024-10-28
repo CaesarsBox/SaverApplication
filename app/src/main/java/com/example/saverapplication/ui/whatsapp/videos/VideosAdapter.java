@@ -62,14 +62,14 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosView
 
     public static class VideosViewHolder extends RecyclerView.ViewHolder {
         ImageView videoImageView;
-        ImageButton playButton;
+        ImageView playButton;
         ImageView downloadButton;
 
         public VideosViewHolder(View itemView) {
             super(itemView);
             videoImageView = itemView.findViewById(R.id.videoThumbnailImageView);
-            playButton = itemView.findViewById(R.id.playButton);
-            downloadButton = itemView.findViewById(R.id.downloadButton);
+            playButton = itemView.findViewById(R.id.videoPlayButton);
+            downloadButton = itemView.findViewById(R.id.videoDownloadButton);
         }
     }
 

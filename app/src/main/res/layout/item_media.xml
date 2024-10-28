@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -21,6 +21,32 @@
         android:src="@drawable/ic_play_button"
         android:contentDescription="@string/play_video"
         android:background="@android:color/transparent"
+        android:layout_gravity="center"
         android:padding="16dp"
         android:paddingTop="10dp"/>
-</RelativeLayout>
+
+    <!-- Wrapper FrameLayout to add background circle and share icon -->
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|top"
+        android:layout_margin="8dp">
+
+        <!-- Circular background for the share button -->
+        <View
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@drawable/circle_background"
+            android:layout_gravity="center" />
+
+        <!-- Share button with transparent background -->
+        <ImageButton
+            android:id="@+id/downloadsShareButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_share"
+            android:contentDescription="@string/share_image"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_gravity="center" />
+    </FrameLayout>
+</FrameLayout>

@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,10 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.saverapplication.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImagesViewHolder> {
-    private final List<ImageData> imageList;
+    private List<ImageData> imageList = new ArrayList<>();
     private final OnItemClickListener itemClickListener;
     private final Context context;
 
@@ -36,11 +38,9 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImagesView
     public void onBindViewHolder(@NonNull ImagesViewHolder holder, int position) {
         final ImageData imageData = imageList.get(position);
 
-        // Load image thumbnail using Glide
         Glide.with(context)
                 .load(Uri.parse(imageData.getThumbnailUri()))
                 .into(holder.imageImageView);
-
         holder.itemView.setOnClickListener(v -> itemClickListener.onItemClick(imageData.getImageUri()));
 
         holder.downloadButton.setOnClickListener(v -> itemClickListener.onDownloadClick(imageData.getImageUri()));
@@ -49,6 +49,14 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImagesView
     @Override
     public int getItemCount() {
         return imageList.size();
+    }
+
+    public void updateImageData(List<ImageData> newImageData) {
+        this.imageList.clear();
+        if (newImageData != null) {
+            this.imageList.addAll(newImageData);
+        }
+        notifyDataSetChanged();
     }
 
     public static class ImagesViewHolder extends RecyclerView.ViewHolder {

@@ -19,25 +19,23 @@ import java.util.List;
 
 public class DownloadsFragment extends Fragment {
 
-    private RecyclerView recyclerViewMedia;
-    private MediaAdapter mediaAdapter;  // Make this a class-level variable
-    private List<VideoItem> mediaItems; // Store the media items here
+    private MediaAdapter mediaAdapter;
+    private List<VideoItem> mediaItems;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_downloads, container, false);
 
-        recyclerViewMedia = view.findViewById(R.id.recyclerViewMedia);
+        RecyclerView recyclerViewMedia = view.findViewById(R.id.recyclerViewMedia);
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
         recyclerViewMedia.setLayoutManager(layoutManager);
 
-        // Initialize the media items list
         mediaItems = new ArrayList<>();
         mediaAdapter = new MediaAdapter(mediaItems, getContext());
         recyclerViewMedia.setAdapter(mediaAdapter);
 
-        loadMediaFiles();  // Load files initially
+        loadMediaFiles();
 
         return view;
     }
@@ -45,11 +43,11 @@ public class DownloadsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        loadMediaFiles();  // Refresh the media files when the fragment is resumed
+        loadMediaFiles();
     }
 
     private void loadMediaFiles() {
-        mediaItems.clear();  // Clear the existing items to prevent duplicates
+        mediaItems.clear();
         File dcimDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
         File statusSaverDirectory = new File(dcimDirectory, "StatusSaver");
 
@@ -59,16 +57,16 @@ public class DownloadsFragment extends Fragment {
                 for (File file : files) {
                     if (file.isFile()) {
                         if (file.getName().endsWith(".mp4")) {
-                            mediaItems.add(new VideoItem(file, true)); // Add video item
+                            mediaItems.add(new VideoItem(file, true));
                         } else if (file.getName().endsWith(".jpg")) {
-                            mediaItems.add(new VideoItem(file, false)); // Add image item
+                            mediaItems.add(new VideoItem(file, false));
                         }
                     }
                 }
             }
         }
 
-        mediaAdapter.notifyDataSetChanged();  // Notify the adapter of data changes
+        mediaAdapter.notifyDataSetChanged();
     }
 }
 

@@ -1,0 +1,16 @@
+<!-- res/drawable/about_item_background.xml -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <shape>
+            <solid android:color="#EEEEEE" />
+            <corners android:radius="8dp" />
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <solid android:color="#FFFFFF" />
+            <corners android:radius="8dp" />
+            <stroke android:width="1dp" android:color="#DDDDDD" />
+        </shape>
+    </item>
+</selector>

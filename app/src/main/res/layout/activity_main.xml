@@ -7,19 +7,27 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <!-- ViewPager to display content for each tab -->
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/container"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <!-- TabLayout for the tabs at the bottom -->
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        app:tabMode="fixed"
-        app:tabGravity="fill" />
+        <!-- ViewPager positioned above the TabLayout -->
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        <!-- TabLayout fixed at the bottom -->
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabMode="fixed"
+            app:tabGravity="fill" />
+
+    </LinearLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

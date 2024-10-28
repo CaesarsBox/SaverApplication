@@ -25,7 +25,7 @@ public class WhatsAppFragment extends Fragment {
 
         new TabLayoutMediator(bTabLayout, bViewPager,
                 (tab, position) -> {
-                    tab.setText(pagerAdapter.getPageTitle(position)); // Set the title for each tab
+                    tab.setText(pagerAdapter.getPageTitle(position));
                 }).attach();
 
         return view;

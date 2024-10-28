@@ -1,31 +1,23 @@
+<!-- res/layout/activity_splash.xml -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@drawable/background"
+    android:gravity="center">
 
-    <!-- ImageView with flexible width and height -->
     <ImageView
-        android:id="@+id/image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:contentDescription="@string/splash_image_description"
-        android:src="@drawable/whats"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter"/>
-
+    android:id="@+id/splash_image"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+    android:src="@drawable/whats" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/image"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="32dp"
-        android:fontFamily="sans-serif"
-        android:text="Powered By M2K Technologies"
-        android:textColor="@color/black"
-        android:textSize="16sp" />
+        android:layout_centerVertical="true"
+        android:text="Powered by M2K Technologies"
+        android:layout_below="@+id/splash_image"/>
+
 </RelativeLayout>

@@ -21,6 +21,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.saverapplication.ui.downloads.DownloadsFragment;
+import com.example.saverapplication.ui.settings.SettingsFragment;
 import com.example.saverapplication.ui.whatsapp.WhatsAppFragment;
 import com.example.saverapplication.ui.whatsapp4b.WBFragment;
 import com.google.android.material.tabs.TabLayout;
@@ -127,6 +128,8 @@ public class MainActivity extends AppCompatActivity {
                     return new WBFragment();
                 case 2:
                     return new DownloadsFragment();
+                case 3:
+                    return new SettingsFragment();
                 default:
                     return new WhatsAppFragment();
             }
@@ -134,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
 
         @Override
@@ -146,6 +149,8 @@ public class MainActivity extends AppCompatActivity {
                     return "WB";
                 case 2:
                     return "Downloads";
+                case 3:
+                    return "Settings";
                 default:
                     return "";
             }

@@ -1,12 +1,17 @@
 package com.example.saverapplication.ui.whatsapp4b;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,6 +34,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,6 +42,9 @@ import java.util.List;
 import java.util.Locale;
 
 public class ImageBFragment extends Fragment {
+    private ImagesAdapter imagesAdapter;
+    private static final int REQUEST_CODE = 100;
+
     public ImageBFragment() {
     }
 
@@ -62,11 +71,64 @@ public class ImageBFragment extends Fragment {
             }
         };
 
-        ImagesAdapter imagesAdapter = new ImagesAdapter(requireContext(), getImageData(), itemClickListener);
+        imagesAdapter = new ImagesAdapter(requireContext(), new ArrayList<>(), itemClickListener);
         recyclerView.setAdapter(imagesAdapter);
+
+        // Check for permissions
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE);
+        } else {
+            loadImages();
+        }
 
         return view;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadImages();
+    }
+
+    private void loadImages() {
+        imagesAdapter.updateImageData(getImageData());
+    }
+
+    private void openImage(String imageUri) {
+        Log.d("ImageUri", imageUri);
+
+        if (imageUri == null || imageUri.isEmpty()) {
+            Log.e("ImageBFragment", "Image URI is invalid");
+            return;
+        }
+
+        String filePath = Uri.parse(imageUri).getPath();
+        Log.d("ImageBFragment", "Checking file path: " + filePath);
+
+        File imageFile = new File(filePath);
+        if (!imageFile.exists()) {
+            Log.e("ImageBFragment", "Image file does not exist: " + filePath);
+            return;
+        }
+
+        Intent intent = new Intent(requireContext(), ImageViewerActivity.class);
+        intent.putExtra("imageUri", imageUri);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                loadImages(); // Load images if permission is granted
+            } else {
+                Toast.makeText(requireContext(), "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
 
     private List<ImageData> getImageData() {
         List<ImageData> imageDataList = new ArrayList<>();
@@ -79,7 +141,6 @@ public class ImageBFragment extends Fragment {
                 for (File file : files) {
                     if (file.isFile() && isImageFile(file)) {
                         Uri imageUri = Uri.fromFile(file);
-
                         Uri thumbnailUri = getThumbnailUriForImage(file);
 
                         ImageData imageData = new ImageData(imageUri.toString(), thumbnailUri.toString());
@@ -128,7 +189,6 @@ public class ImageBFragment extends Fragment {
         }
     }
 
-
     private int calculateInSampleSize(BitmapFactory.Options options) {
         final int height = options.outHeight;
         final int width = options.outWidth;
@@ -159,15 +219,6 @@ public class ImageBFragment extends Fragment {
         return thumbnailFile;
     }
 
-    private void openImage(String imageUri) {
-        Log.d("ImageUri", imageUri);
-
-        Intent intent = new Intent(requireContext(), ImageViewerActivity.class);
-        intent.putExtra("imageUri", imageUri);
-        startActivity(intent);
-    }
-
-
     private void downloadImage(String imageUri) {
         Uri uri = Uri.parse(imageUri);
 
@@ -185,11 +236,13 @@ public class ImageBFragment extends Fragment {
 
         try {
             InputStream inputStream = requireContext().getContentResolver().openInputStream(uri);
-            OutputStream outputStream = new FileOutputStream(destinationFile);
+            OutputStream outputStream = Files.newOutputStream(destinationFile.toPath());
 
             byte[] buffer = new byte[1024];
             int length;
-            while ((length = inputStream.read(buffer)) > 0) {
+            while (true) {
+                assert inputStream != null;
+                if (!((length = inputStream.read(buffer)) > 0)) break;
                 outputStream.write(buffer, 0, length);
             }
 
@@ -214,5 +267,5 @@ public class ImageBFragment extends Fragment {
 
         return (extension != null && !extension.isEmpty()) ? extension : "jpg";
     }
-
 }
+

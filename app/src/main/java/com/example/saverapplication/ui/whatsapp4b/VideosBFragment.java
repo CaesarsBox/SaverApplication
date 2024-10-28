@@ -175,23 +175,32 @@ public class VideosBFragment extends Fragment {
         try {
             FileUtils.copyFile(sourceFile, destinationFile);
 
-            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-            mediaScanIntent.setData(Uri.fromFile(destinationFile));
-            requireContext().sendBroadcast(mediaScanIntent);
+            if (destinationFile.exists() && destinationFile.length() > 0) {
+                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                mediaScanIntent.setData(Uri.fromFile(destinationFile));
+                requireContext().sendBroadcast(mediaScanIntent);
 
-            showSuccessToast();
-        } catch (IOException e) {
-            e.printStackTrace();
+                showSuccessToast();
+            } else {
+                showErrorToast();
+            }
+        } catch (Exception e) {
+            Log.e("VideoBFragment", "Error copying file: " + e.getMessage());
             showErrorToast();
         }
     }
 
+
     private void showSuccessToast() {
-        requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(), "Video downloaded successfully", Toast.LENGTH_SHORT).show());
+        requireActivity().runOnUiThread(() ->
+                Toast.makeText(requireContext(), "Video downloaded successfully", Toast.LENGTH_SHORT).show()
+        );
     }
 
     private void showErrorToast() {
-        requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(), "Failed to download video", Toast.LENGTH_SHORT).show());
+        requireActivity().runOnUiThread(() ->
+                Toast.makeText(requireContext(), "Failed to download video", Toast.LENGTH_SHORT).show()
+        );
     }
 
     @Override

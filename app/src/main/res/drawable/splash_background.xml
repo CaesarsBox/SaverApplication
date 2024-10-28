@@ -1,0 +1,17 @@
+<!-- res/drawable/saver_background.xml -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#25D366"
+            android:endColor="#128C7E"
+            android:angle="270"/>
+        </shape>
+    </item>
+    <item>
+        <bitmap
+            android:src="@drawable/whats"
+        android:gravity="center|top"
+        android:tileMode="disabled"/>
+    </item>
+</layer-list>

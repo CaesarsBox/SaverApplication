@@ -1,36 +1,37 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:padding="8dp">
 
+    <!-- Video Thumbnail -->
     <ImageView
         android:id="@+id/videoThumbnailImageView"
         android:layout_width="169dp"
         android:layout_height="170dp"
         android:adjustViewBounds="true"
-        android:contentDescription="Video Thumbnail"
         android:scaleType="centerCrop"
-        android:src="@android:drawable/ic_menu_gallery"
-        tools:ignore="HardcodedText,ImageContrastCheck" />
+        android:src="@android:drawable/ic_menu_gallery" />
 
-    <ImageButton
-        android:id="@+id/playButton"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_gravity="center"
-        android:contentDescription="Play"
-        android:src="@drawable/ic_play_button"
-        tools:ignore="HardcodedText,TouchTargetSizeCheck" />
-
+    <!-- Play Button in the center of the video thumbnail -->
     <ImageView
-        android:id="@+id/downloadButton"
+        android:id="@+id/videoPlayButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_play_button"
+        android:layout_gravity="center"
+        android:clickable="true" />
+
+    <!-- Download button overlay on bottom right of the video -->
+    <ImageView
+        android:id="@+id/videoDownloadButton"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_gravity="bottom|end"
-        android:clickable="true"
         android:contentDescription="Download"
         android:src="@drawable/download"
-        tools:ignore="HardcodedText,TouchTargetSizeCheck" />
+        android:layout_gravity="bottom|end"
+        android:layout_margin="4dp"
+        android:clickable="true" />
+
 </FrameLayout>
+
