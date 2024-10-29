@@ -3,4 +3,18 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="light_green">#2CD33C</color>
+    <!-- colors for dark theme -->
+    <color name="dark_background">#121212</color>
+    <color name="dark_card_background">#424141</color>
+    <color name="dark_text_color">#FFFFFF</color>
+    <color name="dark_accent">#DEBCFF</color>
+
+    <!-- colors for light theme -->
+    <color name="light_background">#FFFFFF</color>
+    <color name="light_card_background">#F5F5F5</color>
+    <color name="light_text_color">#000000</color>
+    <color name="light_accent">#6200EE</color>
+
+
+
 </resources>

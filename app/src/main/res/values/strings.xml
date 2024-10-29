@@ -11,14 +11,14 @@
 
     <!-- General Settings -->
     <string name="general_settings">General Settings</string>
-    <string name="new_status_available_notify">New Status Available Notify</string>
+    <string name="new_status_available_notify">Notifications for New Status</string>
     <string name="promotional_notifications">Promotional Notifications</string>
     <string name="night_mode">Night Mode (Dark)</string>
-    <string name="opt_out_ads_personalization">Opt out of Ads Personalization</string>
+    <string name="opt_out_ads_personalization">Ads Personalization</string>
 
     <!-- Remove Ads Section -->
     <string name="remove_ads">Remove Ads</string>
-    <string name="remove_ads_description">Remove Advertisement for Year</string>
+    <string name="remove_ads_description">Remove Advertisement for a Year</string>
     <string name="price_ksh">Ksh 200.00</string>
     <string name="buy">BUY</string>
 
@@ -30,9 +30,32 @@
 
     <!-- About Section -->
     <string name="about">About</string>
-    <string name="app_languages">App Languages</string>
+    <string name="Support_the_Team">Support the Team</string>
     <string name="write_suggestion">Write Suggestion</string>
     <string name="clear_app_cache">Clear App Cache</string>
     <string name="clear_app_cache_description">Clear Temporary Cache Files</string>
     <string name="period">•</string>
+
+    <!-- Terms and Privacy Policy -->
+    <string name="terms_of_use_text">
+        "Welcome to M2K Technologies! These Terms of Use govern your use of our application, a WhatsApp status saver app that allows you to save media from your WhatsApp contacts.\n\n
+        By using this app, you agree to comply with and be bound by these terms. If you disagree with any part of these terms, you may not use the application.\n\n
+        1. **Use of the App**: This app is intended solely for personal use. You are responsible for ensuring that saved media is used in compliance with applicable laws and the WhatsApp terms of service.\n\n
+        2. **Intellectual Property**: All logos, trademarks, and content in the app are owned by M2K Technologies. You may not reproduce, distribute, or create derivative works without permission.\n\n
+        3. **Ads and Purchases**: M2K Technologies offers ad-supported content. You may choose to remove ads by purchasing a subscription or in-app product.\n\n
+        4. **Limitation of Liability**: M2K Technologies will not be liable for any damages resulting from your use of the app or inability to use it, including but not limited to data loss.\n\n
+        5. **Changes to Terms**: M2K Technologies may modify these Terms at any time. We encourage users to review these terms periodically to stay informed.\n\n
+        For further questions, please contact m2kmediake@gmail.com.\n"
+
+    </string>
+    <string name="privacy_policy_text">
+        "M2K Technologies is committed to protecting your privacy. This policy explains how we collect, use, and safeguard your data when using our app.\n\n
+        1. **Data Collection**: This app may collect data to enhance user experience and enable personalized ads. No personal data such as contacts or messages is collected.\n\n
+        2. **Personalized Ads**: We may work with third-party providers to display ads based on your app usage preferences. You can control ad personalization settings within the app.\n\n
+        3. **Storage Permissions**: The app requires permission to access storage for saving media. This permission is solely for the app’s core functionality.\n\n
+        4. **Data Security**: We use industry-standard security measures to protect your data from unauthorized access. However, we cannot guarantee absolute security.\n\n
+        5. **Third-Party Services**: Our app may integrate with services provided by third-party partners. Please refer to their privacy policies for additional details.\n\n
+        6. **Changes to Privacy Policy**: M2K Technologies reserves the right to modify this policy. Users will be notified of significant changes.\n\n
+        For inquiries about this policy, please email m2kmediake@gmail.com.\n"
+    </string>
 </resources>

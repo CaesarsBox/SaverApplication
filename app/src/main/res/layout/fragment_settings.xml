@@ -1,9 +1,9 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="#F5F5F5">
+    android:padding="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,6 +22,7 @@
 
         <!-- New Status Available Notify -->
         <LinearLayout
+            android:id="@+id/card_new_status_available"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -34,18 +35,21 @@
                 android:layout_height="24dp"
                 android:contentDescription="@string/new_status_available_notify"
                 android:src="@drawable/ic_status_notify"
+                android:layout_gravity="center"
                 app:tint="#4CAF50"
                 android:layout_marginEnd="16dp"/>
 
             <TextView
+                android:id="@+id/text_new_status_available"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/new_status_available_notify"
                 android:textSize="16sp"
-                android:textColor="#000"/>
+                />
 
             <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/statusNotifySwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"/>
@@ -53,11 +57,12 @@
 
         <!-- Promotional Notifications -->
         <LinearLayout
+            android:id="@+id/card_promotional_notifications"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="12dp"
-            android:background="@drawable/toggle_background"
+            android:background="@drawable/background"
             android:layout_marginBottom="8dp">
 
             <ImageView
@@ -65,19 +70,22 @@
                 android:layout_height="24dp"
                 android:contentDescription="@string/promotional_notifications"
                 android:src="@drawable/ic_promo_notify"
+                android:layout_gravity="center"
                 app:tint="#4CAF50"
                 android:layout_marginEnd="16dp"/>
 
             <TextView
+                android:id="@+id/text_promotional_notifications"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/promotional_notifications"
                 android:textSize="16sp"
-                android:textColor="#000"/>
+                />
 
 
             <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_promotional_notifications"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"/>
@@ -85,11 +93,12 @@
 
         <!-- Night Mode -->
         <LinearLayout
+            android:id="@+id/card_night_mode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="12dp"
-            android:background="@drawable/toggle_background"
+            android:background="@drawable/background"
             android:layout_marginBottom="8dp">
 
             <ImageView
@@ -98,17 +107,20 @@
                 android:contentDescription="@string/night_mode"
                 android:src="@drawable/ic_night_mode"
                 app:tint="#4CAF50"
+                android:layout_gravity="center"
                 android:layout_marginEnd="16dp"/>
 
             <TextView
+                android:id="@+id/text_night_mode"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/night_mode"
                 android:textSize="16sp"
-                android:textColor="#000"/>
+                />
 
             <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_night_mode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"/>
@@ -116,11 +128,12 @@
 
         <!-- Opt out of Ads Personalization -->
         <LinearLayout
+            android:id="@+id/card_opt_out_ads_personalization"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="12dp"
-            android:background="@drawable/toggle_background"
+            android:background="@drawable/background"
             android:layout_marginBottom="16dp">
 
             <ImageView
@@ -129,17 +142,20 @@
                 android:contentDescription="@string/opt_out_ads_personalization"
                 android:src="@drawable/ic_ads_personalization"
                 app:tint="#4CAF50"
+                android:layout_gravity="center"
                 android:layout_marginEnd="16dp"/>
 
             <TextView
+                android:id="@+id/text_opt_out_ads_personalization"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/opt_out_ads_personalization"
                 android:textSize="16sp"
-                android:textColor="#000"/>
+                />
 
             <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_ads_personalization"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"/>
@@ -196,6 +212,7 @@
             android:layout_marginTop="16dp">
 
             <TextView
+                android:id="@+id/terms_of_use"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/terms_of_use"
@@ -210,6 +227,7 @@
                 android:layout_marginEnd="8dp"/>
 
             <TextView
+                android:id="@+id/privacy_policy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/privacy_policy"
@@ -228,21 +246,24 @@
 
         <!-- About Items -->
         <LinearLayout
+            android:id="@+id/card_support_the_team"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- App Languages -->
+            <!-- Support the Team -->
             <TextView
+                android:id="@+id/text_support_the_team"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:background="@drawable/about_item_background"
-                android:text="@string/app_languages"
+                android:text="@string/Support_the_Team"
                 android:textSize="16sp"/>
 
             <!-- Write Suggestion -->
             <TextView
+                android:id="@+id/write_suggestion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
@@ -252,6 +273,7 @@
 
             <!-- Clear App Cache -->
             <TextView
+                android:id="@+id/clear_app_cache"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
