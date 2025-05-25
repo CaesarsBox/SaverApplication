@@ -1,24 +1,28 @@
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="8dp">
+    android:layout_margin="8dp"
+    android:elevation="2dp"
+    android:layout_gravity="center">
 
-    <!-- Image or video thumbnail -->
-    <ImageView
-        android:id="@+id/statusThumbnailImageView"
-        android:layout_width="169dp"
-        android:layout_height="170dp"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        android:src="@android:drawable/ic_menu_gallery" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <!-- Download button -->
-    <ImageView
-        android:id="@+id/downloadButton"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:contentDescription="Download"
-        android:src="@drawable/download"
-        android:layout_gravity="bottom|end" />
-</FrameLayout>
+        <ImageView
+            android:id="@+id/thumbnail"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop" />
+
+        <ImageView
+            android:id="@+id/playIcon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_play"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

@@ -12,22 +12,66 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- ViewPager positioned above the TabLayout -->
-        <androidx.viewpager.widget.ViewPager
+        <!-- Toolbar positioned at the top -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:title="Status Saver">
+
+            <!-- Icons wrapped in a LinearLayout -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:orientation="horizontal">
+
+                <!-- Notifications icon -->
+                <ImageView
+                    android:id="@+id/notifications_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_notifications"
+                    android:contentDescription="@string/notifications_icon_desc"
+                    android:padding="8dp"
+                    app:tint="@android:color/white" />
+
+                <!-- News icon -->
+                <ImageView
+                    android:id="@+id/news_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_news"
+                    android:contentDescription="@string/news_icon_desc"
+                    android:padding="8dp"
+                    app:tint="@android:color/white" />
+            </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
+
+        <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            android:contentDescription="@string/viewPager" />
 
         <!-- TabLayout fixed at the bottom -->
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabMode="fixed"
-            app:tabGravity="fill" />
-
+            android:contentDescription="@string/tabs"
+            app:tabGravity="fill"
+            app:tabMode="fixed" />
+        <com.google.android.gms.ads.AdView
+            xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:adSize="BANNER"
+            app:adUnitId="ca-app-pub-3940256099942544/9214589741"/>
     </LinearLayout>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

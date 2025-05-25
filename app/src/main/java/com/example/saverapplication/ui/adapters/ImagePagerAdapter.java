@@ -1,4 +1,4 @@
-package com.example.saverapplication.ui.downloads;
+package com.example.saverapplication.ui.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -66,8 +66,6 @@ public class ImagePagerAdapter extends RecyclerView.Adapter<ImagePagerAdapter.Im
         public ImageViewHolder(View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageView);
-            deleteButton = itemView.findViewById(R.id.imageDeleteButton);
-            shareButton = itemView.findViewById(R.id.imageShareButton);
         }
     }
 

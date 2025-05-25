@@ -5,7 +5,7 @@
     android:padding="8dp">
 
     <ImageView
-        android:id="@+id/thumbnailImageView"
+        android:id="@+id/image_view"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:contentDescription="Imageview"
@@ -17,7 +17,6 @@
         android:id="@+id/playButton"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:layout_centerInParent="true"
         android:src="@drawable/ic_play_button"
         android:contentDescription="@string/play_video"
         android:background="@android:color/transparent"
@@ -26,27 +25,56 @@
         android:paddingTop="10dp"/>
 
     <!-- Wrapper FrameLayout to add background circle and share icon -->
-    <FrameLayout
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|top"
-        android:layout_margin="8dp">
+        android:layout_margin="8dp"
+        android:orientation="vertical">
 
-        <!-- Circular background for the share button -->
-        <View
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:background="@drawable/circle_background"
-            android:layout_gravity="center" />
-
-        <!-- Share button with transparent background -->
-        <ImageButton
-            android:id="@+id/downloadsShareButton"
+        <!-- Share button with circular background -->
+        <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_share"
-            android:contentDescription="@string/share_image"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:layout_gravity="center" />
-    </FrameLayout>
+            android:layout_gravity="center">
+
+            <View
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/circle_background"
+                android:layout_gravity="center" />
+
+            <ImageButton
+                android:id="@+id/downloadsShareButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_share"
+                android:contentDescription="@string/share_image"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_gravity="center" />
+        </FrameLayout>
+
+        <!-- Delete button with circular background, positioned below share button -->
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp">
+
+            <View
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/circle_background"
+                android:layout_gravity="center" />
+
+            <ImageButton
+                android:id="@+id/downloadsDeleteButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_delete"
+                android:contentDescription="@string/delete_image"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_gravity="center" />
+        </FrameLayout>
+    </LinearLayout>
 </FrameLayout>
